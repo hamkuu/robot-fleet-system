@@ -69,3 +69,41 @@ The topics are general-purpose so other fleet components can consume the same ev
 | `robot_heartbeat`     | AMR       | The AMR periodically confirmed that it was online.                 |
 
 Publish events with MQTT QoS 1. The Metrics Server uses `event_id` to ignore duplicate deliveries.
+
+## Metrics Server
+
+### Data model
+
+The Metrics Server stores each received event as an immutable row in the `events` table.
+
+```
+CREATE TABLE events
+(
+  event_id    TEXT PRIMARY KEY,
+  event_type  TEXT        NOT NULL,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  received_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  robot_id    TEXT,
+  task_id     TEXT,
+  data        JSONB       NOT NULL DEFAULT '{}'
+);
+```
+
+- `received_at` is added by the Metrics Server when it receives the event.
+- `robot_id` and `task_id` are optional because they do not apply to every event.
+- `data` stores fields specific to the event type, such as the new robot state or error code.
+- The primary key prevents the same `event_id` from being stored more than once.
+
+### REST APIs
+
+The Fleet UI reads live status and reports from the Metrics Server through these endpoints:
+
+| Endpoint                              | Description                                                              |
+|---------------------------------------|--------------------------------------------------------------------------|
+| `GET /api/v1/robots/status`           | Return the latest state of each robot.                                   |
+| `GET /api/v1/reports/completion-rate` | Return completed, failed, and cancelled task counts and completion rate. |
+| `GET /api/v1/reports/productivity`    | Return average cycle time and completed tasks per hour.                  |
+| `GET /api/v1/reports/errors`          | Return error counts grouped by error type and related task failures.     |
+| `GET /api/v1/reports/utilization`     | Return time spent working, moving, idling, and charging.                 |
+
+Report endpoints accept `from` and `to` timestamps and an optional `robot_id` query parameter.
