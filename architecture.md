@@ -20,12 +20,18 @@
 
 ```mermaid
 flowchart LR
-    AMR -->|status events| Broker[MQTT broker]
-    Fleet[FMS] -->|job events| Broker
-    Broker --> Metrics[Metrics Server]
-    Metrics --> DB[(PostgreSQL)]
-    Metrics -->|live status| UI[Fleet UI]
+  AMR -->|status events| Broker[MQTT broker]
+  Fleet[FMS] -->|job events| Broker
+  Broker --> Metrics[Metrics Server]
+  Metrics -->|store events| DB[(PostgreSQL)]
+  Metrics -->|live status| UI[Fleet UI]
 ```
+
+- AMR → MQTT broker: Publishes task execution, robot state, error, and heartbeat events.
+- FMS → MQTT broker: Publishes task creation, assignment, and cancellation events.
+- MQTT broker → Metrics Server: Delivers subscribed fleet events.
+- Metrics Server → PostgreSQL: Validates and stores events.
+- Metrics Server → Fleet UI: Provides live status and reports through the REST API.
 
 ## Events
 
