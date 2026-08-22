@@ -23,7 +23,7 @@ flowchart LR
   AMR -->|status events| Broker[MQTT broker]
   Fleet[FMS] -->|job events| Broker
   Broker --> Metrics[Metrics Server]
-  Metrics -->|store events| DB[(PostgreSQL)]
+  Metrics -->|store events| DB[(PostgresSQL)]
   Metrics -->|live status| UI[Fleet UI]
 ```
 
