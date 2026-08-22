@@ -35,7 +35,17 @@ flowchart LR
 
 ## Events
 
-### Topics
+### Event Write Strategies
+
+- Publish task, robot-state, and error events immediately when they occur.
+- Each AMR publishes a heartbeat with its current state every 30–60 seconds.
+- AMRs and FMS store unsent events locally and retry them after disconnection or restart.
+- The MQTT broker uses persistent storage and queues events while the Metrics Server is unavailable.
+- The Metrics Server writes an event to PostgreSQL before acknowledging it.
+- `event_id` prevents retried events from being stored more than once.
+- Reporting failures do not interrupt task assignment or robot operation.
+
+### Event Topics
 
 - AMR publishes to `fleet/events/amr/{robot_id}`.
 - FMS publishes to `fleet/events/fms`.
