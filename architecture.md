@@ -58,7 +58,7 @@ The topics are general-purpose so other fleet components can consume the same ev
 ```json
 {
   "event_id": "event-101",
-  "event_type": "task_completed",
+  "event_type": "robot_state_changed",
   "occurred_at": "2026-08-22T10:15:00Z",
   "robot_id": "amr-01",
   "task_id": "task-123",
@@ -86,7 +86,13 @@ The topics are general-purpose so other fleet components can consume the same ev
 
 Publish events with MQTT QoS 1. The Metrics Server uses `event_id` to ignore duplicate deliveries.
 
-## Metrics Server
+## Metrics Server and Database
+
+### Database justification
+
+PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible JSONB
+event data. A separate time-series database is unnecessary because events are not high-frequency
+sensor data.
 
 ### Data model
 
