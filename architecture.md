@@ -6,6 +6,8 @@
   operation.
 - As a customer manager, I want to view job completion rate, cycle time, throughput, errors, and
   utilization, so that I can evaluate fleet performance.
+- As an engineer, I want daily metrics aggregated across all customer sites, so that I can monitor
+  fleet performance globally.
 
 ## Components
 
@@ -25,7 +27,7 @@
 
 > change data capture (CDC), which is the process of observing all data changes written to a
 > database and extracting them in a form in which they can be replicated to other systems
-> 
+>
 > — *Change Data Capture is having a moment. Why?*
 
 ## Diagrams
