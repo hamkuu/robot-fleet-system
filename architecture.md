@@ -23,11 +23,19 @@
 >
 > — *Designing Data-Intensive Applications, 2nd Edition*, Chapter 12, “Stream Processing”
 
+> change data capture (CDC), which is the process of observing all data changes written to a
+> database and extracting them in a form in which they can be replicated to other systems
+> 
+> — *Change Data Capture is having a moment. Why?*
+
 ## Diagrams
 
 ### Local Architecture
 
 ```mermaid
+---
+title: Local Architecture without External Access
+---
 flowchart LR
     AMR -->|status events| Broker[MQTT broker]
     Fleet[FMS] -->|job events| Broker
@@ -42,17 +50,38 @@ flowchart LR
 - Metrics Server → PostgreSQL: Validates and stores events.
 - Metrics Server → Fleet UI: Provides live status and reports through the REST API.
 
-### Cloud extension with CDC
+### Cloud extension
 
 ```mermaid
+---
+title: Sync local DB with cloud DB with Change Data Capture (CDC)
+---
 flowchart LR
     DB[(Local PostgreSQL)] -->|CDC| CloudDB[(Cloud PostgreSQL)]
     CloudDB --> Metrics[Metrics Server]
     Metrics --> Reports[reports]
 ```
 
-CDC sends committed database changes to the cloud through an outbound connection and resumes after
-network outages.
+- CDC sends committed database changes to the cloud through an outbound connection
+- Operation can resume after network outages.
+
+### Change Data Capture (CDC) Implementation
+
+```mermaid
+---
+title: CDC with Debezium and Kafka Connect
+---
+flowchart LR
+    LocalDB[(Local PostgreSQL)] --> Source[Kafka Connect: Debezium]
+    Source --> Kafka[Cloud Kafka]
+    Kafka --> Sink[Kafka Connect: PostgreSQL sink]
+    Sink --> CloudDB[(Cloud PostgreSQL)]
+```
+
+- Debezium reads committed PostgreSQL changes from the WAL.
+- Kafka Connect sends them to cloud Kafka through an outbound connection.
+- A cloud connector writes them to cloud PostgreSQL.
+- Stored offsets allow synchronization to resume after a network outage.
 
 ## Events
 
