@@ -16,8 +16,8 @@ COPY pyproject.toml uv.lock ./
 # Install dependencies (no venv needed in containers)
 RUN uv sync --frozen --no-dev --no-install-project
 
-COPY . ./
+COPY . .
 
 EXPOSE 8000
 
-CMD ["uv", "run", "fastapi", "run", "main.py", "--host", "0.0.0.0"]
+CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0"]
