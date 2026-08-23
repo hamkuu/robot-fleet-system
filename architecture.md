@@ -16,15 +16,24 @@
 - PostgreSQL: Stores job, robot-state, and error history.
 - Fleet UI: Displays live status and metrics.
 
-## Diagram
+## Design Principles
+
+> - Model every state change as an immutable event and write it to an append-only log.
+> - Any read-optimized materialized views are derived from these events.
+>
+> — *Designing Data-Intensive Applications, 2nd Edition*, Chapter 12, “Stream Processing”
+
+## Diagrams
+
+### Local Architecture
 
 ```mermaid
 flowchart LR
-  AMR -->|status events| Broker[MQTT broker]
-  Fleet[FMS] -->|job events| Broker
-  Broker --> Metrics[Metrics Server]
-  Metrics -->|store events| DB[(Postgres)]
-  Metrics -->|live status| UI[Fleet UI]
+    AMR -->|status events| Broker[MQTT broker]
+    Fleet[FMS] -->|job events| Broker
+    Broker --> Metrics[Metrics Server]
+    Metrics -->|store events| DB[(PostgreSQL)]
+    Metrics -->|live status| UI[Fleet UI]
 ```
 
 - AMR → MQTT broker: Publishes task execution, robot state, error, and heartbeat events.
@@ -32,6 +41,18 @@ flowchart LR
 - MQTT broker → Metrics Server: Delivers subscribed fleet events.
 - Metrics Server → PostgreSQL: Validates and stores events.
 - Metrics Server → Fleet UI: Provides live status and reports through the REST API.
+
+### Cloud extension with CDC
+
+```mermaid
+flowchart LR
+    DB[(Local PostgreSQL)] -->|CDC| CloudDB[(Cloud PostgreSQL)]
+    CloudDB --> Metrics[Metrics Server]
+    Metrics --> Reports[reports]
+```
+
+CDC sends committed database changes to the cloud through an outbound connection and resumes after
+network outages.
 
 ## Events
 
@@ -90,9 +111,9 @@ Publish events with MQTT QoS 1. The Metrics Server uses `event_id` to ignore dup
 
 ### Database justification
 
-PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible JSONB
-event data. A separate time-series database is unnecessary because events are not high-frequency
-sensor data.
+PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible
+JSONB event data. A separate time-series database is unnecessary because events are not
+high-frequency sensor data.
 
 ### Data model
 
@@ -129,3 +150,8 @@ The Fleet UI reads live status and reports from the Metrics Server through these
 | `GET /api/v1/reports/utilization`     | Return time spent working, moving, idling, and charging.                 |
 
 Report endpoints accept `from` and `to` timestamps and an optional `robot_id` query parameter.
+
+## References
+
+- Designing Data-Intensive Applications, 2nd Edition, Chapter 12, “Stream Processing”
+- [Change Data Capture is having a moment. Why?](https://materialize.com/blog/change-data-capture-is-having-a-moment-why/)
