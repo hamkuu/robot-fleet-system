@@ -1,0 +1,8 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    command: ["uv", "run", "fastapi", "dev", "main.py", "--host", "0.0.0.0"]
+    volumes:
+      - ./backend:/app
