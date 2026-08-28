@@ -6,7 +6,7 @@ Distributed Robot Fleet System.
 
 ```bash
 docker compose build
-docker compose up 
+docker compose up
 ```
 
 ## Reset
