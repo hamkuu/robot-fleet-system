@@ -15,6 +15,8 @@ IMAGE_IDS = [
 
 
 async def _seed_images(connection: AsyncConnection) -> None:
+    captured_at = datetime(2026, 8, 29, tzinfo=timezone.utc)
+
     async with AsyncSession(
         bind=connection,
         expire_on_commit=False,
@@ -29,7 +31,7 @@ async def _seed_images(connection: AsyncConnection) -> None:
                     content_type="image/jpeg",
                     image_metadata={"sequence": index},
                     device_id="robot-1",
-                    captured_at=datetime(2026, 8, 29, index, tzinfo=timezone.utc),
+                    captured_at=captured_at.replace(hour=index),
                 )
                 for index in range(3)
             ]
@@ -99,15 +101,8 @@ def test_create_image_stores_upload_and_returns_image_details(
     assert image["content_type"] == "image/png"
     assert image["metadata"] == {"camera": "front", "battery": 87}
     assert image["device_id"] == "robot-7"
-    assert datetime.fromisoformat(image["captured_at"]) == datetime(
-        2026,
-        8,
-        29,
-        12,
-        34,
-        56,
-        tzinfo=timezone.utc,
-    )
+    expected_captured_at = datetime.fromisoformat("2026-08-29T12:34:56Z")
+    assert datetime.fromisoformat(image["captured_at"]) == expected_captured_at
     assert image["created_at"]
     assert image["updated_at"]
     assert "image_data" not in image
