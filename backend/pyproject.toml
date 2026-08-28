@@ -9,3 +9,12 @@ dependencies = [
     "fastapi[standard]>=0.141.1",
     "sqlmodel>=0.0.39",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
