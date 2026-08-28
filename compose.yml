@@ -30,6 +30,7 @@ services:
     build: ./backend
     ports:
       - "8000:8000"
+    command: ["fastapi", "dev", "main.py", "--host", "0.0.0.0"]
     volumes:
       - ./backend:/app
     depends_on:
