@@ -18,7 +18,7 @@ from fastapi import (
 )
 from models.image import StoredImage
 from schemas.image import ImageRead, ImageUpdate
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/api/v1/images", tags=["images"])
@@ -112,8 +112,7 @@ async def get_image(
 
     if image is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Image not found",
+            status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
 
     return ImageRead.model_validate(image)
@@ -155,6 +154,28 @@ async def update_image(
 
     await session.commit()
     return ImageRead.model_validate(image)
+
+
+@router.delete(
+    "/{image_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response
+)
+async def delete_image(
+    image_id: UUID,
+    session: Annotated[AsyncSession, Depends(get_db)],
+) -> Response:
+    statement = (
+        delete(StoredImage).where(StoredImage.id == image_id).returning(StoredImage.id)
+    )
+    result = await session.execute(statement)
+
+    if result.scalar_one_or_none() is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image not found",
+        )
+
+    await session.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/{image_id}/content", response_class=Response)
