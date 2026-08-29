@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 from typing import Annotated
+from urllib.parse import quote
+from uuid import UUID
 
 from database import get_db
 from fastapi import (
@@ -10,6 +12,7 @@ from fastapi import (
     Form,
     HTTPException,
     Query,
+    Response,
     UploadFile,
     status,
 )
@@ -87,6 +90,63 @@ async def list_images(
     result = await session.execute(statement)
 
     return [ImageRead.model_validate(row) for row in result.mappings().all()]
+
+
+@router.get("/{image_id}", response_model=ImageRead)
+async def get_image(
+    image_id: UUID,
+    session: Annotated[AsyncSession, Depends(get_db)],
+) -> ImageRead:
+    statement = select(
+        StoredImage.id,
+        StoredImage.filename,
+        StoredImage.content_type,
+        StoredImage.image_metadata.label("metadata"),
+        StoredImage.device_id,
+        StoredImage.captured_at,
+        StoredImage.created_at,
+        StoredImage.updated_at,
+    ).where(StoredImage.id == image_id)
+    result = await session.execute(statement)
+    image = result.mappings().one_or_none()
+
+    if image is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image not found",
+        )
+
+    return ImageRead.model_validate(image)
+
+
+@router.get("/{image_id}/content", response_class=Response)
+async def get_image_content(
+    image_id: UUID,
+    session: Annotated[AsyncSession, Depends(get_db)],
+) -> Response:
+    statement = select(
+        StoredImage.image_data,
+        StoredImage.filename,
+        StoredImage.content_type,
+    ).where(StoredImage.id == image_id)
+    result = await session.execute(statement)
+    image = result.one_or_none()
+
+    if image is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image not found",
+        )
+
+    encoded_filename = quote(image.filename, safe="")
+    return Response(
+        content=image.image_data,
+        media_type=image.content_type,
+        headers={
+            "Content-Disposition": f"inline; filename*=UTF-8''{encoded_filename}",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
 
 
 @router.post("", response_model=ImageRead, status_code=status.HTTP_201_CREATED)
