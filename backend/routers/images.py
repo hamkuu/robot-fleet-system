@@ -112,8 +112,7 @@ async def get_image(
 
     if image is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Image not found",
+            status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
 
     return ImageRead.model_validate(image)
