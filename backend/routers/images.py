@@ -17,8 +17,8 @@ from fastapi import (
     status,
 )
 from models.image import StoredImage
-from schemas.image import ImageRead
-from sqlalchemy import select
+from schemas.image import ImageRead, ImageUpdate
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/api/v1/images", tags=["images"])
@@ -116,6 +116,44 @@ async def get_image(
             detail="Image not found",
         )
 
+    return ImageRead.model_validate(image)
+
+
+@router.patch("/{image_id}", response_model=ImageRead)
+async def update_image(
+    image_id: UUID,
+    image_update: ImageUpdate,
+    session: Annotated[AsyncSession, Depends(get_db)],
+) -> ImageRead:
+    updated_fields = image_update.model_dump(exclude_unset=True)
+    if "metadata" in updated_fields:
+        updated_fields["image_metadata"] = updated_fields.pop("metadata")
+
+    statement = (
+        update(StoredImage)
+        .where(StoredImage.id == image_id)
+        .values(**updated_fields)
+        .returning(
+            StoredImage.id,
+            StoredImage.filename,
+            StoredImage.content_type,
+            StoredImage.image_metadata.label("metadata"),
+            StoredImage.device_id,
+            StoredImage.captured_at,
+            StoredImage.created_at,
+            StoredImage.updated_at,
+        )
+    )
+    result = await session.execute(statement)
+    image = result.mappings().one_or_none()
+
+    if image is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image not found",
+        )
+
+    await session.commit()
     return ImageRead.model_validate(image)
 
 
