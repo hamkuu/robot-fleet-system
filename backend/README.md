@@ -11,6 +11,9 @@
 uv run fastapi dev
 ```
 
+Open [http://localhost:8000/ui](http://localhost:8000/ui) to browse, upload,
+download, edit metadata, and delete published images.
+
 ## Image Model
 
 | Field          | PostgreSQL type | Description                                                      |
