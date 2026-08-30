@@ -9,10 +9,11 @@ docker compose build
 docker compose up
 ```
 
-## Simple UI
+## Accessible Services
 
-Open [http://localhost:8000/ui](http://localhost:8000/ui) to browse, upload, download, edit
-metadata, and delete published images.
+- [Simple UI on Backend](http://localhost:8000/ui)
+- [Backend OpenAPI docs](http://localhost:8000/docs)
+- [Database Adminer](http://localhost:8010)
 
 ## Sub-README Files
 
