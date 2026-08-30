@@ -43,4 +43,5 @@ jobs:
           gcloud run services update ${{ env.SERVICE }} \
             --image ${{ env.IMAGE }} \
             --region ${{ env.REGION }} \
-            --project ${{ env.PROJECT_ID }}
+            --project ${{ env.PROJECT_ID }} \
+            --port 8000
