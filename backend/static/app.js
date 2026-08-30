@@ -62,6 +62,17 @@ function makeButton(label, className, action, imageId) {
   return button;
 }
 
+function addDetail(list, label, value, title = value) {
+  const term = document.createElement("dt");
+  term.textContent = label;
+
+  const description = document.createElement("dd");
+  description.textContent = value;
+  description.title = title;
+
+  list.append(term, description);
+}
+
 function makeCard(image) {
   const article = document.createElement("article");
   article.className = "image-card";
@@ -79,19 +90,16 @@ function makeCard(image) {
   const body = document.createElement("div");
   body.className = "card-body";
 
-  const title = document.createElement("h3");
-  title.textContent = image.filename;
-  title.title = image.filename;
-
-  const time = document.createElement("p");
-  time.className = "capture-time";
-  time.textContent = `${image.device_id} · ${formatDate(image.captured_at)}`;
-
-  const metadata = document.createElement("p");
-  metadata.className = "metadata-preview";
-  const metadataText = JSON.stringify(image.metadata);
-  metadata.textContent = metadataText.length > 105 ? `${metadataText.slice(0, 102)}…` : metadataText;
-  metadata.title = metadataText;
+  const details = document.createElement("dl");
+  details.className = "image-details";
+  addDetail(details, "id", image.id);
+  addDetail(details, "filename", image.filename);
+  addDetail(details, "content_type", image.content_type);
+  addDetail(details, "device_id", image.device_id);
+  addDetail(details, "captured_at", formatDate(image.captured_at), image.captured_at);
+  addDetail(details, "created_at", formatDate(image.created_at), image.created_at);
+  addDetail(details, "updated_at", formatDate(image.updated_at), image.updated_at);
+  addDetail(details, "metadata", JSON.stringify(image.metadata));
 
   const actions = document.createElement("div");
   actions.className = "card-actions";
@@ -114,7 +122,7 @@ function makeCard(image) {
   remove.setAttribute("aria-label", `Delete ${image.filename}`);
 
   actions.append(view, download, edit, remove);
-  body.append(title, time, metadata, actions);
+  body.append(details, actions);
   article.append(frame, body);
   return article;
 }
