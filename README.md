@@ -9,12 +9,10 @@ docker compose build
 docker compose up
 ```
 
-## Reset
+## Simple UI
 
-```bash
-docker system prune -a
-docker volume prune -a
-```
+Open [http://localhost:8000/ui](http://localhost:8000/ui) to browse, upload, download, edit
+metadata, and delete published images.
 
 ## Sub-README Files
 
