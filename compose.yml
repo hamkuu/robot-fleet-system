@@ -1,4 +1,19 @@
 services:
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    restart: always
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto-data:/mosquitto/data
+    healthcheck:
+      test: [ "CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "ok" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
   db:
     image: postgres:18
     restart: always
@@ -46,5 +61,32 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
 
+  mqtt-subscriber:
+    build: ./backend
+    command: ["python", "mqtt_subscriber.py"]
+    restart: always
+    volumes:
+      - ./backend:/app
+    depends_on:
+      mqtt-broker:
+        condition: service_healthy
+        restart: true
+      db:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - MQTT_HOST=mqtt-broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=images/+/captures
+      - MQTT_CLIENT_ID=image-subscriber
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+
 volumes:
   app-db-data:
+  mosquitto-data:

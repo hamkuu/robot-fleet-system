@@ -8,7 +8,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-engine = create_async_engine(settings.DATABASE_URL, echo=True)
+engine = create_async_engine(settings.DATABASE_URL)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 

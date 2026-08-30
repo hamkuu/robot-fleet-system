@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
+    MQTT_HOST: str = "localhost"
+    MQTT_PORT: int = 1883
+    MQTT_TOPIC: str = "images/+/captures"
+    MQTT_CLIENT_ID: str = "image-subscriber"
 
     @computed_field
     @property
