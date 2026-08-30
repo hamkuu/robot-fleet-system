@@ -177,6 +177,16 @@ main {
   background: #eee;
 }
 
+.delete-button {
+  color: #b42318;
+  border-color: #b42318;
+}
+
+.delete-button:hover {
+  color: #fff;
+  background: #b42318;
+}
+
 .empty-state {
   padding: 48px 16px;
   text-align: center;
