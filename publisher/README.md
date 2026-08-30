@@ -19,7 +19,7 @@ uv run python publish_image.py \
   --device-id amr01-camera \
   --metadata '{"title":"Linux Logo"}' \
   images/linux_logo.png
-  
+
 uv run python publish_image.py \
   --device-id user-phone \
   --metadata '{"title":"AMR"}' \
