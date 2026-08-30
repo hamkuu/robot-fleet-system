@@ -16,20 +16,24 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> URL:
-        socket_path = (
-            f"/cloudsql/{self.CLOUD_SQL_CONNECTION_NAME}"
-            if self.CLOUD_SQL_CONNECTION_NAME
-            else None
-        )
+        if self.CLOUD_SQL_CONNECTION_NAME:
+            return URL.create(
+                "postgresql+asyncpg",
+                username=self.POSTGRES_USER,
+                password=self.POSTGRES_PASSWORD,
+                database=self.POSTGRES_DB,
+                query={
+                    "host": f"/cloudsql/{self.CLOUD_SQL_CONNECTION_NAME}",
+                },
+            )
 
         return URL.create(
             "postgresql+asyncpg",
             username=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,
-            host=None if socket_path else self.POSTGRES_SERVER,
-            port=None if socket_path else self.POSTGRES_PORT,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
             database=self.POSTGRES_DB,
-            query={"host": socket_path} if socket_path else {},
         )
 
     model_config = SettingsConfigDict(env_file="../.env")
