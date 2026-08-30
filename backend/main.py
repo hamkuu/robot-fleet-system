@@ -7,7 +7,6 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from routers.images import router as images_router
 
-
 STATIC_DIR = Path(__file__).parent / "static"
 
 
