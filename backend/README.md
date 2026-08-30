@@ -24,3 +24,11 @@ uv run fastapi dev
 | `captured_at`  | `TIMESTAMPTZ`   | Time when the camera device captured the image.                  |
 | `created_at`   | `TIMESTAMPTZ`   | Time when the image was initially stored.                        |
 | `updated_at`   | `TIMESTAMPTZ`   | Time when the image or its metadata was last modified.           |
+
+## Deployment
+
+```bash
+cd backend
+docker build --platform linux/amd64 -t asia-northeast1-docker.pkg.dev/robot-fleet/robot-fleet/backend:latest .
+docker push asia-northeast1-docker.pkg.dev/robot-fleet/robot-fleet/backend:latest
+```
