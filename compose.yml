@@ -61,6 +61,32 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
 
+  mqtt-subscriber:
+    build: ./backend
+    command: ["python", "mqtt_subscriber.py"]
+    restart: always
+    volumes:
+      - ./backend:/app
+    depends_on:
+      mqtt-broker:
+        condition: service_healthy
+        restart: true
+      db:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+    environment:
+      - MQTT_HOST=mqtt-broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=images/+/captures
+      - MQTT_CLIENT_ID=image-subscriber
+      - POSTGRES_SERVER=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+
 volumes:
   app-db-data:
   mosquitto-data:
