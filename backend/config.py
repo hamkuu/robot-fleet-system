@@ -3,8 +3,8 @@ from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
-    POSTGRES_SERVER: str
-    POSTGRES_PORT: int
+    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_PORT: int = 5432
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
