@@ -3,12 +3,13 @@ from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
-    POSTGRES_SERVER: str = "localhost"
-    POSTGRES_PORT: int = 5432
+    POSTGRES_SERVER: str
+    POSTGRES_PORT: int
     POSTGRES_DB: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     CLOUD_SQL_CONNECTION_NAME: str | None = None
+
     MQTT_HOST: str = "localhost"
     MQTT_PORT: int = 1883
     MQTT_TOPIC: str = "images/+/captures"
