@@ -1,0 +1,294 @@
+:root {
+  color-scheme: light;
+  color: #222;
+  background: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  color: inherit;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 32px 0 24px;
+  border-bottom: 1px solid #ddd;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 4px;
+  font-size: 1.75rem;
+}
+
+.page-header p {
+  margin-bottom: 0;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.actions,
+.card-actions,
+.dialog-actions,
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 7px 12px;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: #f3f3f3;
+}
+
+.button-primary {
+  color: #fff;
+  background: #222;
+  border-color: #222;
+}
+
+.button-primary:hover {
+  background: #444;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+main {
+  padding: 24px 0 48px;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.image-card {
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.image-frame {
+  aspect-ratio: 4 / 3;
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+}
+
+.image-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 12px;
+}
+
+.image-details {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 10px;
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+}
+
+.image-details dt {
+  color: #666;
+  font-weight: 600;
+}
+
+.image-details dd {
+  min-width: 0;
+  margin: 0;
+  font-family: ui-monospace, monospace;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.card-actions {
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
+
+.card-actions .button {
+  flex: 1;
+  min-height: 32px;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+}
+
+.delete-button,
+.close-button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.delete-button:hover,
+.close-button:hover {
+  background: #eee;
+}
+
+.delete-button {
+  color: #b42318;
+  border-color: #b42318;
+}
+
+.delete-button:hover {
+  color: #fff;
+  background: #b42318;
+}
+
+.empty-state {
+  padding: 48px 16px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.empty-state p {
+  margin-bottom: 16px;
+}
+
+dialog {
+  width: min(520px, calc(100% - 32px));
+  max-height: calc(100vh - 32px);
+  padding: 0;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 40%);
+}
+
+.dialog-form {
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+}
+
+.dialog-header {
+  justify-content: space-between;
+}
+
+.dialog-header h2 {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+label small {
+  color: #666;
+  font-weight: 400;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.dialog-actions {
+  justify-content: flex-end;
+}
+
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  max-width: calc(100% - 32px);
+  padding: 10px 12px;
+  color: #fff;
+  background: #222;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.skeleton {
+  min-height: 300px;
+  background: #eee;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+@media (max-width: 800px) {
+  .image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+}

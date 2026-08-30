@@ -9,12 +9,11 @@ docker compose build
 docker compose up
 ```
 
-## Reset
+## Accessible Services
 
-```bash
-docker system prune -a
-docker volume prune -a
-```
+- [Simple UI on Backend](http://localhost:8000/ui)
+- [Backend OpenAPI docs](http://localhost:8000/docs)
+- [Database Adminer](http://localhost:8010)
 
 ## Sub-README Files
 
