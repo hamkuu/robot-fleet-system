@@ -74,10 +74,7 @@ function makeCard(image) {
   preview.alt = image.filename;
   preview.loading = "lazy";
 
-  const badge = document.createElement("span");
-  badge.className = "device-badge";
-  badge.textContent = image.device_id;
-  frame.append(preview, badge);
+  frame.append(preview);
 
   const body = document.createElement("div");
   body.className = "card-body";
@@ -88,7 +85,7 @@ function makeCard(image) {
 
   const time = document.createElement("p");
   time.className = "capture-time";
-  time.textContent = formatDate(image.captured_at);
+  time.textContent = `${image.device_id} · ${formatDate(image.captured_at)}`;
 
   const metadata = document.createElement("p");
   metadata.className = "metadata-preview";
@@ -113,7 +110,7 @@ function makeCard(image) {
   download.textContent = "Download";
 
   const edit = makeButton("Edit", "button button-secondary", "edit", image.id);
-  const remove = makeButton("×", "icon-button delete-button", "delete", image.id);
+  const remove = makeButton("Delete", "delete-button", "delete", image.id);
   remove.setAttribute("aria-label", `Delete ${image.filename}`);
 
   actions.append(view, download, edit, remove);

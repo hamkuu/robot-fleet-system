@@ -3,118 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Browse and manage robot fleet captures." />
-    <title>Fleet Images</title>
+    <meta name="description" content="Browse and manage published images." />
+    <title>Images</title>
     <link rel="stylesheet" href="/ui/styles.css" />
     <script src="/ui/app.js" defer></script>
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/ui" aria-label="Fleet Images home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>Fleet Images</span>
-      </a>
-      <div class="header-actions">
-        <button class="button button-primary" id="open-upload" type="button">
-          <span aria-hidden="true">＋</span> Add capture
-        </button>
+    <header class="page-header">
+      <div>
+        <h1>Images</h1>
+        <p><strong id="image-count">—</strong> published</p>
+      </div>
+      <div class="actions">
+        <button class="button" id="refresh" type="button">Refresh</button>
+        <button class="button button-primary" id="open-upload" type="button">Add image</button>
       </div>
     </header>
 
     <main>
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-stat" aria-live="polite">
-          <strong id="image-count">—</strong>
-          <span>published captures</span>
-        </div>
-      </section>
+      <div class="image-grid" id="image-grid" aria-live="polite"></div>
 
-      <section class="library" aria-labelledby="library-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Latest first</p>
-            <h2 id="library-title">Capture library</h2>
-          </div>
-          <button class="button button-secondary" id="refresh" type="button">
-            <span aria-hidden="true">↻</span> Refresh
-          </button>
-        </div>
-
-        <div class="image-grid" id="image-grid" aria-live="polite"></div>
-
-        <div class="empty-state" id="empty-state" hidden>
-          <div class="empty-icon" aria-hidden="true">◇</div>
-          <h3>No captures yet</h3>
-          <p>Publish the first image from a robot or upload one here.</p>
-          <button class="button button-primary" id="empty-upload" type="button">
-            Add capture
-          </button>
-        </div>
-      </section>
+      <div class="empty-state" id="empty-state" hidden>
+        <p>No images have been published.</p>
+        <button class="button button-primary" id="empty-upload" type="button">Add image</button>
+      </div>
     </main>
 
     <dialog id="upload-dialog">
       <form class="dialog-form" id="upload-form">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">New archive entry</p>
-            <h2>Add capture</h2>
-          </div>
-          <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
-        </div>
-
-        <label class="file-drop">
-          <input id="upload-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
-          <span class="file-icon" aria-hidden="true">＋</span>
-          <strong>Choose an image</strong>
-          <small id="upload-file-name">JPEG, PNG or WebP · up to 10 MB</small>
-        </label>
-
-        <div class="field-row">
-          <label>
-            <span>Device ID</span>
-            <input name="device_id" type="text" placeholder="robot-01" required />
-          </label>
-          <label>
-            <span>Captured at</span>
-            <input id="captured-at" name="captured_at" type="datetime-local" required />
-          </label>
+        <div class="dialog-header">
+          <h2>Add image</h2>
+          <button class="close-button close-dialog" type="button" aria-label="Close">×</button>
         </div>
 
         <label>
-          <span>Metadata <small>JSON object</small></span>
+          <span>Image</span>
+          <input id="upload-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
+          <small id="upload-file-name">JPEG, PNG, or WebP. Maximum 10 MB.</small>
+        </label>
+
+        <label>
+          <span>Device ID</span>
+          <input name="device_id" type="text" placeholder="robot-01" required />
+        </label>
+
+        <label>
+          <span>Captured at</span>
+          <input id="captured-at" name="captured_at" type="datetime-local" required />
+        </label>
+
+        <label>
+          <span>Metadata <small>(JSON object)</small></span>
           <textarea name="metadata" rows="5" spellcheck="false">{}</textarea>
         </label>
 
         <div class="dialog-actions">
-          <button class="button button-secondary close-dialog" type="button">Cancel</button>
-          <button class="button button-primary" type="submit">Publish capture</button>
+          <button class="button close-dialog" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Add image</button>
         </div>
       </form>
     </dialog>
 
     <dialog id="edit-dialog">
       <form class="dialog-form" id="edit-form">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">Capture details</p>
-            <h2>Edit image</h2>
-          </div>
-          <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
+        <div class="dialog-header">
+          <h2>Edit image</h2>
+          <button class="close-button close-dialog" type="button" aria-label="Close">×</button>
         </div>
 
         <input name="id" type="hidden" />
+
         <label>
           <span>Filename</span>
           <input name="filename" type="text" required />
         </label>
+
         <label>
-          <span>Metadata <small>JSON object</small></span>
+          <span>Metadata <small>(JSON object)</small></span>
           <textarea name="metadata" rows="7" spellcheck="false"></textarea>
         </label>
+
         <div class="dialog-actions">
-          <button class="button button-secondary close-dialog" type="button">Cancel</button>
-          <button class="button button-primary" type="submit">Save changes</button>
+          <button class="button close-dialog" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Save</button>
         </div>
       </form>
     </dialog>
