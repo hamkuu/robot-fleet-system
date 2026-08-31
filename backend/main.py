@@ -22,9 +22,9 @@ app = FastAPI(title="Backend Server", lifespan=lifespan)
 app.include_router(images_router)
 
 
-@app.get("/ui", include_in_schema=False)
+@app.get("/", include_in_schema=False)
 async def image_library_ui() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
 
 
-app.mount("/ui", StaticFiles(directory=STATIC_DIR, html=True), name="ui")
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="ui")
