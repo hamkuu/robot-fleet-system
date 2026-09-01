@@ -16,11 +16,13 @@ Publish an image:
 ```bash
 cd publisher
 uv run python publish_image.py \
+  --broker localhost \
   --device-id amr01-camera \
   --metadata '{"title":"Linux Logo"}' \
   images/linux_logo.png
 
 uv run python publish_image.py \
+  --broker localhost \
   --device-id user-phone \
   --metadata '{"title":"AMR"}' \
   images/amr.jpg
