@@ -26,8 +26,6 @@ uv run python publish_image.py \
   --device-id user-phone \
   --metadata '{"title":"AMR"}' \
   images/amr.jpg
-  
-
 ```
 
 The publisher generates a UUID and capture timestamp and sends the message with MQTT QoS 1 to:
