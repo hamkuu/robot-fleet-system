@@ -9,7 +9,7 @@ to the central fleet system, so that authorized users can view and manage the im
 
 ## Live Demo
 
-[Image Management Page](https://fleet.hamkuu.com)
+Image Management UI available on [fleet.hamkuu.com](https://fleet.hamkuu.com)
 
 Image Publish Command:
 
