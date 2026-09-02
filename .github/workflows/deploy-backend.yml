@@ -12,7 +12,6 @@ env:
   PROJECT_ID: robot-fleet
   REGION: asia-northeast1
   IMAGE: asia-northeast1-docker.pkg.dev/robot-fleet/robot-fleet/backend:latest
-  SERVICE: backend
 
 jobs:
   deploy:
@@ -37,9 +36,16 @@ jobs:
             --tag ${{ env.IMAGE }} \
             --project ${{ env.PROJECT_ID }}
 
-      - name: Deploy to Cloud Run
+      - name: Deploy backend as Cloud Run service
         run: |
-          gcloud run services update ${{ env.SERVICE }} \
+          gcloud run services update backend \
+            --image ${{ env.IMAGE }} \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Deploy MQTT subscriber as Cloud Run worker pool
+        run: |
+          gcloud run worker-pools update mqtt-subscriber \
             --image ${{ env.IMAGE }} \
             --region ${{ env.REGION }} \
             --project ${{ env.PROJECT_ID }}
