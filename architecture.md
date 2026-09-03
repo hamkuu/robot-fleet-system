@@ -142,10 +142,19 @@ Publish events with MQTT QoS 1. The Metrics Server uses `event_id` to ignore dup
 
 ### Database justification
 
-- PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible
-JSONB event data.
-- A separate time-series database is unnecessary because events are not
-high-frequency sensor data.
+#### Why PostgreSQL for now?
+
+- Provides transactional, idempotent event ingestion
+- Indexed SQL aggregation over task and robot histories
+- WAL-based CDC for resumable synchronization to the cloud
+- Supports concurrent writes from the event consumer and reads from the reporting API
+
+#### When time-series database can be considered?
+
+- Data arrives at very high, sustained rates, e.g., sensor telemetry
+- Large retention volumes
+- Queries primarily aggregate values over time windows
+- PostgreSQL cannot meet measured ingestion or query-latency
 
 ### Data model
 
