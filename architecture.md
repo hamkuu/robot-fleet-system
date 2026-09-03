@@ -142,8 +142,9 @@ Publish events with MQTT QoS 1. The Metrics Server uses `event_id` to ignore dup
 
 ### Database justification
 
-PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible
-JSONB event data. A separate time-series database is unnecessary because events are not
+- PostgreSQL supports task relationships, time-based queries, duplicate-safe writes, and flexible
+JSONB event data.
+- A separate time-series database is unnecessary because events are not
 high-frequency sensor data.
 
 ### Data model
